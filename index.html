@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agrotech Interactive: Calculus of MD2 Pineapple Growth</title>
+    <!-- Tailwind CSS for modern, production-grade styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for high-fidelity animations and plots -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome for beautiful agrotech/scientific iconography -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- MathJax Configuration for smooth rendering of LaTeX formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Inter Font for superior readability -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Navigation / Header -->
+    <header class="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-emerald-500/20 p-2 rounded-lg border border-emerald-400/30">
+                    <i class="fa-solid fa-seedling text-2xl text-emerald-400"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-300">Program: SFA: Agrotech</span>
+                    <h1 class="text-xl font-extrabold tracking-tight">Interactive Crop Calculus Dashboard</h1>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-right hidden sm:block">
+                    <p class="text-xs text-emerald-200">Physiological Modeling Case Study</p>
+                    <p class="text-sm font-semibold text-white">MD2 Pineapple (*Ananas comosus*)</p>
+                </div>
+                <span class="bg-amber-500 text-slate-950 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide flex items-center gap-1 shadow-sm">
+                    <i class="fa-solid fa-flask"></i> Bioscience Simulation
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Application Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        
+        <!-- Intro & Problem Statement Card -->
+        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 flex flex-col lg:flex-row gap-8 items-stretch">
+            <div class="lg:w-3/5 space-y-4">
+                <div class="flex items-center space-x-2 text-emerald-700">
+                    <i class="fa-solid fa-circle-info text-lg"></i>
+                    <h2 class="text-lg font-bold uppercase tracking-wider text-emerald-800">The Agrotech Challenge in Malaysia</h2>
+                </div>
+                <h3 class="text-2xl font-extrabold text-slate-900">Optimizing Hormonal Forcing Windows for MD2 Pineapples</h3>
+                <p class="text-slate-600 text-sm md:text-base leading-relaxed">
+                    In Malaysia's highly lucrative pineapple sector (concentrated in <strong>Pontian and Kluang, Johor</strong>), MD2 cultivation requires precise scheduling. Forcing—the artificial induction of flowering using ethylene-releasing chemicals (Ethephon)—must be executed when the vegetative plant biomass reaches a critical mass of <strong>2.5 kg to 3.0 kg</strong>. 
+                </p>
+                <p class="text-slate-600 text-sm md:text-base leading-relaxed">
+                    If we force too early, fruits are small and unmarketable. If we force too late, growers waste fertilizer, labor, and crop cycles on redundant vegetative growth. To pinpoint this physiological sweet spot, agrotech managers model growth using the **Logistic Growth Function $f(t)$** and analyze its **first derivative $f'(t)$** to track biological acceleration, peak metabolism, and growth deceleration.
+                </p>
+            </div>
+            
+            <div class="lg:w-2/5 bg-slate-100 rounded-xl border border-slate-200 p-5 flex flex-col justify-between">
+                <div>
+                    <h4 class="text-xs font-extrabold uppercase tracking-widest text-slate-500 mb-2">Scientific Data References</h4>
+                    <ul class="space-y-2 text-xs text-slate-600">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-book-open text-emerald-600 mt-0.5"></i>
+                            <span><strong>MARDI Research Portal:</strong> Crop coefficient datasets for *Ananas comosus var. MD2* on tropical histosols (peat soil).</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-link text-emerald-600 mt-0.5"></i>
+                            <span><strong>DOA Malaysia Publication:</strong> "Manual Teknologi Penanaman Nanas MD2" (Malaysia Department of Agriculture).</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-industry text-emerald-600 mt-0.5"></i>
+                            <span><strong>MPIB (Malaysia Pineapple Industry Board):</strong> Standard industrial growth matrices for commercial farm yields in Johor.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mt-4 pt-4 border-t border-slate-200 flex justify-between items-center text-xs">
+                    <span class="text-slate-500">Cultivation Environment:</span>
+                    <span class="font-semibold text-slate-800 bg-white px-2 py-1 rounded border border-slate-200">Humid Tropical Peat</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Calculus Formulas & Interactive Controls -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Mathematical Formulas Card -->
+            <div class="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between space-y-6">
+                <div>
+                    <div class="flex items-center space-x-2 text-indigo-700 mb-4">
+                        <i class="fa-solid fa-calculator text-lg"></i>
+                        <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-800">Mathematical Formulation</h2>
+                    </div>
+                    
+                    <!-- Logistic Biomass Formula -->
+                    <div class="bg-indigo-50/50 rounded-xl p-4 border border-indigo-100 space-y-2">
+                        <h3 class="text-xs font-bold text-indigo-950 uppercase tracking-wider">1. Plant Biomass Function $f(t)$</h3>
+                        <p class="text-xs text-slate-600 mb-2">Models total vegetative plant weight (grams) at month $t$:</p>
+                        <div class="overflow-x-auto text-center py-2 bg-white rounded-lg border border-indigo-100 shadow-sm text-sm md:text-base font-semibold">
+                            $$f(t) = \frac{L}{1 + e^{-k(t - t_0)}}$$
+                        </div>
+                    </div>
+
+                    <!-- Derivative Formula -->
+                    <div class="bg-amber-50/50 rounded-xl p-4 border border-amber-100 space-y-2 mt-4">
+                        <h3 class="text-xs font-bold text-amber-950 uppercase tracking-wider">2. Growth Rate / Derivative $f'(t)$</h3>
+                        <p class="text-xs text-slate-600 mb-2">Using the quotient and chain rules, the instantaneous growth rate (g/month) is:</p>
+                        <div class="overflow-x-auto text-center py-2 bg-white rounded-lg border border-amber-100 shadow-sm text-xs md:text-sm font-semibold">
+                            $$f'(t) = \frac{L \cdot k \cdot e^{-k(t - t_0)}}{\left(1 + e^{-k(t - t_0)}\right)^2}$$
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Parameters Slider Box -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-xs font-bold uppercase text-slate-700 tracking-wider">Simulation Variables</h4>
+                        <button id="resetParamsBtn" class="text-xs text-emerald-700 hover:underline flex items-center gap-1 font-semibold">
+                            <i class="fa-solid fa-rotate-left"></i> Reset Defaults
+                        </button>
+                    </div>
+
+                    <!-- Carrying Capacity Parameter Slider -->
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-slate-600 font-medium">Max Biomass Potential ($L$):</span>
+                            <span class="font-extrabold text-slate-900"><span id="lValDisplay">3500</span> g</span>
+                        </div>
+                        <input type="range" id="paramL" min="2800" max="4200" step="50" value="3500" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+                        <span class="text-[10px] text-slate-400">Represents final vegetative saturation point before inflorescence.</span>
+                    </div>
+
+                    <!-- Growth Rate Constant Parameter Slider -->
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-slate-600 font-medium">Growth Velocity Index ($k$):</span>
+                            <span class="font-extrabold text-slate-900"><span id="kValDisplay">0.45</span> / month</span>
+                        </div>
+                        <input type="range" id="paramK" min="0.30" max="0.65" step="0.01" value="0.45" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+                        <span class="text-[10px] text-slate-400">Influenced by fertilizer efficiency, soil health, and rainfall.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Graph Canvas -->
+            <div class="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-line text-emerald-600"></i>
+                                MD2 Vegetative Growth Curves (0-14 Months)
+                            </h2>
+                            <p class="text-xs text-slate-500">Hover or click anywhere on the data points to trigger physiological insights.</p>
+                        </div>
+                        <div class="flex gap-2 text-xs">
+                            <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-medium">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> $f(t)$ Biomass
+                            </span>
+                            <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-medium">
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> $f'(t)$ Rate
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Actual Interactive Canvas -->
+                    <div class="relative w-full h-[320px] md:h-[380px] bg-slate-50 rounded-xl p-3 border border-slate-100">
+                        <canvas id="cropChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Touch & Click Interaction Hint -->
+                <div class="mt-4 bg-emerald-50 border border-emerald-100 rounded-lg px-4 py-2 flex items-center gap-3 text-xs text-emerald-800">
+                    <i class="fa-solid fa-hand-pointer text-base animate-pulse text-emerald-600"></i>
+                    <span><strong>Interactive Exploration:</strong> Simply tap any month along the chart curves above to load calculated derivatives, step-by-step calculus, and field advice below!</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Calculus & Agrotech Field Inspector Panel -->
+        <section class="bg-slate-900 text-slate-100 rounded-2xl shadow-xl overflow-hidden border border-slate-800">
+            <!-- Inspector Header banner -->
+            <div class="bg-gradient-to-r from-emerald-900 to-indigo-950 px-6 py-4 border-b border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 bg-rose-500 rounded-full animate-ping"></span>
+                    <h2 class="text-sm font-bold uppercase tracking-widest text-emerald-400">Active Crop Field Inspector Engine</h2>
+                </div>
+                <div id="inspectorTimeline" class="text-xs font-semibold px-3 py-1 bg-white/10 rounded-full border border-white/15 text-emerald-200">
+                    Inspecting: <span id="currentSelectionLabel" class="text-white font-extrabold">Month 6</span>
+                </div>
+            </div>
+
+            <!-- Dynamic Fields -->
+            <div class="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Left metrics display -->
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="grid grid-cols-2 lg:grid-cols-1 gap-4">
+                        <!-- Weight metric -->
+                        <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/50 flex flex-col justify-between">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Calculated Weight $f(t)$</span>
+                            <div class="flex items-baseline space-x-1.5 mt-2">
+                                <span id="weightVal" class="text-3xl font-extrabold text-emerald-400">1,556.7</span>
+                                <span class="text-xs text-slate-400">grams</span>
+                            </div>
+                            <div class="w-full bg-slate-700 h-1.5 rounded-full mt-3 overflow-hidden">
+                                <div id="weightProgress" class="bg-emerald-500 h-1.5 rounded-full transition-all duration-300" style="width: 44%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Derivative speed metric -->
+                        <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/50 flex flex-col justify-between">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Growth Velocity $f'(t)$</span>
+                            <div class="flex items-baseline space-x-1.5 mt-2">
+                                <span id="derivVal" class="text-3xl font-extrabold text-amber-400">+391.2</span>
+                                <span class="text-xs text-slate-400">g/month</span>
+                            </div>
+                            <span class="text-[9px] text-slate-500 mt-2 block">Instantaneous derivative slope value</span>
+                        </div>
+                    </div>
+
+                    <!-- Agrotech Stage Badge -->
+                    <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/50">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">Physiological Crop Stage</span>
+                        <div id="stageBadge" class="inline-block px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500/20 border border-amber-500/40 text-amber-300">
+                            Logarithmic Expansion Phase
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mathematical / Calculation Breakdown -->
+                <div class="lg:col-span-4 bg-slate-950 rounded-xl p-5 border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-500 block mb-3 flex items-center gap-1.5">
+                            <i class="fa-solid fa-gears text-xs"></i> Step-by-Step Calculus Evaluation
+                        </span>
+                        
+                        <!-- Math Output Zone -->
+                        <div id="mathEvaluationContainer" class="space-y-4 text-xs font-mono text-slate-300">
+                            <!-- Dynamic math evaluation text inserted by script -->
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-800/80 text-[10px] text-slate-500 flex items-center gap-1.5">
+                        <i class="fa-solid fa-microchip"></i> Evaluated real-time using localized engine constants
+                    </div>
+                </div>
+
+                <!-- Layman Interpretation / Field Advice -->
+                <div class="lg:col-span-4 space-y-4 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-teal-400 block flex items-center gap-1.5">
+                            <i class="fa-solid fa-clipboard-user text-xs"></i> Agrotechnologist's Field Advice
+                        </span>
+                        <h3 id="adviceTitle" class="text-lg font-bold text-white">Critical Fertilization Buffer Zone</h3>
+                        <p id="adviceDesc" class="text-slate-300 text-xs md:text-sm leading-relaxed">
+                            At Month 6, the derivative $f'(t)$ is near its biological peak. The crop canopy is expanding explosively. To feed this vegetative trajectory, execute fertilization routines immediately with high Nitrogen (N) and Potassium (K) formulations. Maintain consistent drainage control in peat soils.
+                        </p>
+                    </div>
+
+                    <div id="agrotechMilestoneBox" class="p-4 bg-emerald-950/40 border border-emerald-900/50 rounded-xl flex items-center gap-3">
+                        <div class="p-2.5 bg-emerald-900/70 text-emerald-400 rounded-lg text-lg">
+                            <i class="fa-solid fa-truck-ramp-box"></i>
+                        </div>
+                        <div>
+                            <span class="text-[9px] uppercase tracking-wider text-emerald-400 block font-bold">Flowering Induction (Forcing) Status</span>
+                            <span id="forcingStatusText" class="text-xs text-emerald-200 font-semibold">NOT ELIGIBLE: Wait for weight to exceed 2500 grams.</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-6 gap-4">
+                <div class="space-y-1">
+                    <h3 class="text-slate-200 font-bold text-sm">MARDI & DOA Malaysia Agrotech Companion</h3>
+                    <p class="text-xs text-slate-500">Biological model parameters computed from peer-reviewed MD2 canopy studies on tropical peatlands.</p>
+                </div>
+                <div class="flex flex-wrap gap-4 text-xs">
+                    <a href="https://www.mardi.gov.my" target="_blank" class="hover:text-emerald-400 transition-colors">mardi.gov.my</a>
+                    <span class="text-slate-700">|</span>
+                    <a href="https://www.doa.gov.my" target="_blank" class="hover:text-emerald-400 transition-colors">doa.gov.my</a>
+                    <span class="text-slate-700">|</span>
+                    <a href="https://www.mpib.gov.my" target="_blank" class="hover:text-emerald-400 transition-colors">mpib.gov.my</a>
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row justify-between items-center text-[10px] text-slate-600">
+                <p>&copy; 2026 Agrotechnology Computational Bioscience System. Developed for SFA: Agrotech, Malaysia.</p>
+                <p class="mt-2 sm:mt-0 flex items-center gap-1">
+                    <span>Precision Agriculture & Biometrics</span> <i class="fa-solid fa-square-root-variable text-emerald-600"></i>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // -------------------------------------------------------------
+        // Core Mathematical Functions for Pineapple MD2 Growth
+        // -------------------------------------------------------------
+        
+        // Biological Inflection point of standard MD2 growth curve (usually around 6.5 months)
+        const t0_val = 6.5;
+
+        // Cumulative growth formula f(t)
+        function calcBiomass(t, L, k) {
+            return L / (1 + Math.exp(-k * (t - t0_val)));
+        }
+
+        // Exact derivative f'(t) calculated using calculus rules
+        function calcDerivative(t, L, k) {
+            const expTerm = Math.exp(-k * (t - t0_val));
+            const denominator = 1 + expTerm;
+            return (L * k * expTerm) / (denominator * denominator);
+        }
+
+        // -------------------------------------------------------------
+        // Application State & Parameters
+        // -------------------------------------------------------------
+        let currentL = 3500;   // Default carrying capacity (g)
+        let currentK = 0.45;   // Default growth constant index
+        let currentSelectedMonth = 6; // Initially selected month index for inspector
+
+        // Chart reference
+        let mainChart = null;
+
+        // -------------------------------------------------------------
+        // User Interface Elements
+        // -------------------------------------------------------------
+        const lSlider = document.getElementById('paramL');
+        const kSlider = document.getElementById('paramK');
+        const lDisplay = document.getElementById('lValDisplay');
+        const kDisplay = document.getElementById('kValDisplay');
+        const resetBtn = document.getElementById('resetParamsBtn');
+
+        // Inspector UI targets
+        const currentSelectionLabel = document.getElementById('currentSelectionLabel');
+        const weightValText = document.getElementById('weightVal');
+        const weightProgress = document.getElementById('weightProgress');
+        const derivValText = document.getElementById('derivVal');
+        const stageBadge = document.getElementById('stageBadge');
+        const mathEvaluationContainer = document.getElementById('mathEvaluationContainer');
+        const adviceTitleText = document.getElementById('adviceTitle');
+        const adviceDescText = document.getElementById('adviceDesc');
+        const forcingStatusText = document.getElementById('forcingStatusText');
+        const agrotechMilestoneBox = document.getElementById('agrotechMilestoneBox');
+
+        // -------------------------------------------------------------
+        // ChartJS Logic Setup
+        // -------------------------------------------------------------
+        function initChart() {
+            const ctx = document.getElementById('cropChart').getContext('2d');
+            
+            // Build 0-14 Month dataset labels
+            const labels = Array.from({length: 15}, (_, i) => i); // [0, 1, 2, ..., 14]
+            const weights = labels.map(t => calcBiomass(t, currentL, currentK));
+            const derivatives = labels.map(t => calcDerivative(t, currentL, currentK));
+
+            mainChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Plant Biomass f(t) (grams)',
+                            data: weights,
+                            borderColor: '#059669', // Emerald 600
+                            backgroundColor: 'rgba(5, 150, 105, 0.08)',
+                            borderWidth: 3,
+                            yAxisID: 'yBiomass',
+                            tension: 0.35,
+                            fill: true,
+                            pointBackgroundColor: '#059669',
+                            pointHoverRadius: 8,
+                            pointRadius: 4
+                        },
+                        {
+                            label: "Growth Velocity f'(t) (g/month)",
+                            data: derivatives,
+                            borderColor: '#f59e0b', // Amber 500
+                            backgroundColor: 'transparent',
+                            borderWidth: 3,
+                            borderDash: [5, 5],
+                            yAxisID: 'yRate',
+                            tension: 0.35,
+                            pointBackgroundColor: '#f59e0b',
+                            pointHoverRadius: 8,
+                            pointRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            display: false // Using custom legends in header/UI instead
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label.split(' ')[0];
+                                    return ` ${label}: ${context.parsed.y.toFixed(1)} ${context.dataset.yAxisID === 'yBiomass' ? 'g' : 'g/mo'}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Months After Planting (MAP)',
+                                font: { size: 11, weight: 'bold' }
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.03)'
+                            }
+                        },
+                        yBiomass: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Biomass f(t) (g)',
+                                font: { size: 11, weight: 'bold', color: '#059669' }
+                            },
+                            min: 0,
+                            max: 4500,
+                            ticks: {
+                                color: '#059669'
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.04)'
+                            }
+                        },
+                        yRate: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: "Growth Velocity f'(t) (g/mo)",
+                                font: { size: 11, weight: 'bold', color: '#f59e0b' }
+                            },
+                            min: 0,
+                            max: 800,
+                            ticks: {
+                                color: '#f59e0b'
+                            },
+                            grid: {
+                                drawOnChartArea: false // Prevents grid-line overlap
+                            }
+                        }
+                    },
+                    onClick: (event, activeElements) => {
+                        if (activeElements.length > 0) {
+                            const clickedIndex = activeElements[0].index;
+                            currentSelectedMonth = clickedIndex;
+                            updateInspectorPanel(clickedIndex);
+                        }
+                    }
+                }
+            });
+        }
+
+        // -------------------------------------------------------------
+        // Chart & Model Variable Updates
+        // -------------------------------------------------------------
+        function updateSimulationData() {
+            const weights = Array.from({length: 15}, (_, i) => calcBiomass(i, currentL, currentK));
+            const derivatives = Array.from({length: 15}, (_, i) => calcDerivative(i, currentL, currentK));
+
+            mainChart.data.datasets[0].data = weights;
+            mainChart.data.datasets[1].data = derivatives;
+            mainChart.update();
+
+            updateInspectorPanel(currentSelectedMonth);
+        }
+
+        // -------------------------------------------------------------
+        // Inspector UI and Layman Advice Dispatcher
+        // -------------------------------------------------------------
+        function updateInspectorPanel(month) {
+            const biomass = calcBiomass(month, currentL, currentK);
+            const rate = calcDerivative(month, currentL, currentK);
+            
+            // Percentage progress indicator relative to standard mature weight (4000g reference)
+            const progressPercent = Math.min((biomass / 4000) * 100, 100);
+
+            // Update simple metrics
+            currentSelectionLabel.innerHTML = `Month ${month}`;
+            weightValText.innerHTML = biomass.toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+            weightProgress.style.width = `${progressPercent}%`;
+            derivValText.innerHTML = `+${rate.toFixed(1)}`;
+
+            // Render step-by-step mathematical processing log
+            renderCalculusExplanation(month, biomass, rate);
+
+            // Fetch physical parameters and formulate custom field advice
+            generateAgrotechInsights(month, biomass, rate);
+        }
+
+        // Computes detailed latex explanations on-the-fly
+        function renderCalculusExplanation(month, biomass, rate) {
+            const expTerm = Math.exp(-currentK * (month - t0_val)).toFixed(4);
+            const denom = (1 + Math.exp(-currentK * (month - t0_val))).toFixed(4);
+
+            let calculusHTML = `
+                <div class="space-y-1">
+                    <p class="text-emerald-400 font-bold">1. Calculate Biomass $f(${month})$:</p>
+                    <p class="text-slate-400 pl-2">
+                        $f(${month}) = \\frac{${currentL}}{1 + e^{-${currentK}(${month} - 6.5)}} = \\frac{${currentL}}{${denom}} = ${biomass.toFixed(1)}\\text{ g}$
+                    </p>
+                </div>
+                <div class="space-y-1 mt-3">
+                    <p class="text-amber-400 font-bold">2. Calculate Derivative $f'(${month})$:</p>
+                    <p class="text-slate-400 pl-2">
+                        $f'(${month}) = \\frac{${currentL} \\cdot ${currentK} \\cdot e^{-${currentK}(${month}-6.5)}}{\\left(1 + e^{-${currentK}(${month}-6.5)}\\right)^2}$
+                    </p>
+                    <p class="text-slate-400 pl-2">
+                        $f'(${month}) = \\frac{${(currentL * currentK).toFixed(1)} \\cdot ${expTerm}}{\\left(${denom}\\right)^2} = ${rate.toFixed(1)}\\text{ g/month}$
+                    </p>
+                </div>
+            `;
+            
+            mathEvaluationContainer.innerHTML = calculusHTML;
+
+            // Trigger MathJax typesetting so formulas render nicely
+            if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                window.MathJax.typeset([mathEvaluationContainer]);
+            }
+        }
+
+        // Main agricultural business decision-making logic
+        function generateAgrotechInsights(month, biomass, rate) {
+            let badgeText = "";
+            let badgeClass = "";
+            let adviceTitle = "";
+            let adviceDesc = "";
+            let forcingEligible = false;
+            let forcingMessage = "";
+
+            if (month <= 3) {
+                // Lag Phase / Early establishment
+                badgeText = "Lag Phase: Root Establishment";
+                badgeClass = "bg-sky-500/20 border border-sky-500/40 text-sky-300";
+                adviceTitle = "Focus on Weed Control & Soil Hydration";
+                adviceDesc = `During months 0 to 3, the derivative is small ($f'(${month}) = ${rate.toFixed(1)}$ g/mo), signaling minimal leaf accumulation. The plant is routing primary metabolics into root establishment on Malaysian peatlands. Ensure active water table heights are strictly managed (between 50–60cm) to prevent waterlogging or dehydration. Avoid nitrogen shock.`;
+                forcingMessage = "NOT ELIGIBLE: Vegetative weight is too low. Forcing now yields mini-fruits (unusable).";
+            }
+            else if (month > 3 && month <= 7) {
+                // Log Phase / Accelerated growth
+                badgeText = "Log Phase: Vegetative Surge";
+                badgeClass = "bg-indigo-500/20 border border-indigo-500/40 text-indigo-300";
+                adviceTitle = "Deploy Major Nitrogen & Potassium Dressing";
+                adviceDesc = `At month ${month}, growth velocity is near its mathematical maximum, peaking around Month 6.5 with a derivative of $+${rate.toFixed(1)}$ g/mo. The plant canopy is expanding aggressively. High fertilizer rates (NPK 15:15:15 combined with trace elements) are highly recommended now to capitalize on this high metabolic energy phase.`;
+                forcingMessage = "NOT ELIGIBLE: Canopy biomass must grow stronger to bear commercial fruit weight.";
+            }
+            else if (month > 7 && month < 10) {
+                // Transitional growth deceleration
+                badgeText = "Transition: Linear Growth";
+                badgeClass = "bg-amber-500/20 border border-amber-500/40 text-amber-300";
+                adviceTitle = "Transition to Potassium-Heavy Foliar Spraying";
+                adviceDesc = `At month ${month}, weight continues to grow significantly ($f(t) = ${biomass.toFixed(1)}$ g), but the biological derivative $f'(t)$ is falling ($f'(${month}) = ${rate.toFixed(1)}$ g/mo). The acceleration is tapering. Shift from high Nitrogen fertilizer to high Potassium (K) to optimize plant tissue carbohydrate load, essential for the future inflorescence structure.`;
+                forcingMessage = "PRE-FORCING: Nearing threshold. Monitor closely. Keep crop hydrated.";
+            }
+            else {
+                // Month 10+ Plateau phase, potential forcing eligibility
+                badgeText = "Plateau Phase: Maturation Target";
+                badgeClass = "bg-emerald-500/20 border border-emerald-500/40 text-emerald-300";
+                
+                // Determine forcing feasibility based on biomass threshold
+                if (biomass >= 2500) {
+                    forcingEligible = true;
+                    adviceTitle = "Flowering Induction (Forcing) Window open!";
+                    adviceDesc = `Congratulations! The plant biomass ($f(${month}) = ${biomass.toFixed(0)}$ g) exceeds the critical MARDI standard threshold of 2500g. Since growth rate has dropped ($f'(${month}) = ${rate.toFixed(1)}$ g/mo), additional vegetative growth is biologically inefficient. Execute hormone application (Ethephon + Urea mixture) under dry weather to induce uniform flowering.`;
+                    forcingMessage = "ELIGIBLE! Biomass exceeds 2500g. Optimize forcing schedule now.";
+                } else {
+                    forcingEligible = false;
+                    adviceTitle = "Sub-Optimal Weight: Delay Forcing Protocol";
+                    adviceDesc = `Even though the month is ${month}, the current cumulative biomass is only ${biomass.toFixed(0)}g (below the 2500g MARDI goal). Since your customized growth constant $k$ is low, wait another month and apply a targeted foliar nutrient spray to trigger rapid mass gain. Induction right now would lead to underweight fruit.`;
+                    forcingMessage = "INELIGIBLE: Underweight canopy. Delay forcing until weight is ≥ 2500g.";
+                }
+            }
+
+            // Bind values to UI
+            stageBadge.className = `inline-block px-3 py-1.5 rounded-lg text-xs font-bold ${badgeClass}`;
+            stageBadge.innerHTML = badgeText;
+            adviceTitleText.innerHTML = adviceTitle;
+            adviceDescText.innerHTML = adviceDesc;
+            forcingStatusText.innerHTML = forcingMessage;
+
+            // Highlight forcing milestone container color
+            if (forcingEligible) {
+                agrotechMilestoneBox.className = "p-4 bg-emerald-950 border border-emerald-500 rounded-xl flex items-center gap-3 transition-colors duration-300";
+                agrotechMilestoneBox.querySelector('div').className = "p-2.5 bg-emerald-500 text-slate-950 rounded-lg text-lg";
+            } else {
+                agrotechMilestoneBox.className = "p-4 bg-slate-800/60 border border-slate-700/50 rounded-xl flex items-center gap-3 transition-colors duration-300";
+                agrotechMilestoneBox.querySelector('div').className = "p-2.5 bg-slate-700 text-slate-400 rounded-lg text-lg";
+            }
+        }
+
+        // -------------------------------------------------------------
+        // Control Listeners Setup
+        // -------------------------------------------------------------
+        lSlider.addEventListener('input', (e) => {
+            currentL = parseFloat(e.target.value);
+            lDisplay.innerHTML = currentL;
+            updateSimulationData();
+        });
+
+        kSlider.addEventListener('input', (e) => {
+            currentK = parseFloat(e.target.value);
+            kDisplay.innerHTML = currentK.toFixed(2);
+            updateSimulationData();
+        });
+
+        resetBtn.addEventListener('click', () => {
+            currentL = 3500;
+            currentK = 0.45;
+            
+            lSlider.value = 3500;
+            kSlider.value = 0.45;
+            lDisplay.innerHTML = "3500";
+            kDisplay.innerHTML = "0.45";
+            
+            updateSimulationData();
+        });
+
+        // Initialize state variables on boot
+        window.onload = function() {
+            initChart();
+            updateInspectorPanel(currentSelectedMonth);
+        };
+    </script>
+</body>
+</html>
